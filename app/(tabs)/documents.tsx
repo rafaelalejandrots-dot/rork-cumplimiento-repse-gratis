@@ -219,20 +219,6 @@ export default function DocumentsScreen() {
             </Text>
           </View>
         )}
-
-        <TouchableOpacity 
-          style={styles.infoCard}
-          onPress={() => handleDocumentPress(DOCUMENTS.find(d => d.id === 'documentos_zip')!)}
-          activeOpacity={0.7}
-        >
-          <Download color={Colors.primary} size={20} />
-          <View style={styles.infoContent}>
-            <Text style={styles.infoTitle}>Descargar todo</Text>
-            <Text style={styles.infoText}>
-              Descarga toda la biblioteca en un archivo ZIP.
-            </Text>
-          </View>
-        </TouchableOpacity>
       </ScrollView>
     </View>
   );
@@ -420,29 +406,5 @@ const styles = StyleSheet.create({
     marginTop: 8,
     lineHeight: 20,
   },
-  infoCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginHorizontal: 16,
-    backgroundColor: Colors.primaryLight + '10',
-    borderRadius: 12,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: Colors.primaryLight + '30',
-  },
-  infoContent: {
-    flex: 1,
-    marginLeft: 12,
-  },
-  infoTitle: {
-    fontSize: 14,
-    fontWeight: '600' as const,
-    color: Colors.primary,
-    marginBottom: 2,
-  },
-  infoText: {
-    fontSize: 13,
-    color: Colors.textSecondary,
-    lineHeight: 18,
-  },
+
 });
