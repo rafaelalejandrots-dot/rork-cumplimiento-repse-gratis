@@ -229,7 +229,7 @@ function SimulatorContent() {
           <Text style={styles.credentialHeader}>SECRETARÍA DEL TRABAJO Y PREVISIÓN SOCIAL</Text>
           <Text style={styles.credentialName}>Insp. Federal Miguel Hernández</Text>
           <Text style={styles.credentialId}>STPS-2024-00123</Text>
-          <Text style={styles.credentialVigencia}>Vigente hasta: 31/12/2025</Text>
+          <Text style={styles.credentialVigencia}>Vigente hasta: 31/12/2027</Text>
         </View>
 
         <View style={styles.dialogueBubble}>
