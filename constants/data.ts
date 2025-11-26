@@ -353,7 +353,7 @@ export interface Document {
   downloadUrl?: string;
 }
 
-const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/rafaelalejandrots-dot/rork-cumplimiento-repse-gratis/main';
+const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/rafaelejandrots-dot/rork-cumplimiento-repse-gratis/main';
 
 export const DOCUMENTS: Document[] = [
   {
