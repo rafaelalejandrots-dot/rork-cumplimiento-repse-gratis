@@ -7,7 +7,9 @@ import {
   TouchableOpacity, 
   Platform,
   TextInput,
-  Image
+  Image,
+  Linking,
+  Alert
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { 
@@ -73,8 +75,25 @@ export default function DocumentsScreen() {
     return groups;
   }, {} as Record<string, Document[]>);
 
-  const handleDocumentPress = (doc: Document) => {
+  const handleDocumentPress = async (doc: Document) => {
     console.log('Opening document:', doc.id);
+    
+    if (!doc.downloadUrl) {
+      Alert.alert('No disponible', 'Este documento no tiene enlace de descarga.');
+      return;
+    }
+
+    try {
+      const supported = await Linking.canOpenURL(doc.downloadUrl);
+      if (supported) {
+        await Linking.openURL(doc.downloadUrl);
+      } else {
+        Alert.alert('Error', 'No se puede abrir el enlace en este dispositivo.');
+      }
+    } catch (error) {
+      console.error('Error opening document:', error);
+      Alert.alert('Error', 'Ocurrió un error al abrir el documento.');
+    }
   };
 
   return (
@@ -201,15 +220,19 @@ export default function DocumentsScreen() {
           </View>
         )}
 
-        <View style={styles.infoCard}>
+        <TouchableOpacity 
+          style={styles.infoCard}
+          onPress={() => handleDocumentPress(DOCUMENTS.find(d => d.id === 'documentos_zip')!)}
+          activeOpacity={0.7}
+        >
           <Download color={Colors.primary} size={20} />
           <View style={styles.infoContent}>
             <Text style={styles.infoTitle}>Descargar todo</Text>
             <Text style={styles.infoText}>
-              Próximamente podrás descargar toda la biblioteca en un archivo ZIP.
+              Descarga toda la biblioteca en un archivo ZIP.
             </Text>
           </View>
-        </View>
+        </TouchableOpacity>
       </ScrollView>
     </View>
   );

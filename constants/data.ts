@@ -350,7 +350,10 @@ export interface Document {
   category: string;
   type: 'template' | 'guide' | 'legal';
   icon: string;
+  downloadUrl?: string;
 }
+
+const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/rafaelalejandrots-dot/rork-cumplimiento-repse-gratis/main';
 
 export const DOCUMENTS: Document[] = [
   {
@@ -360,6 +363,7 @@ export const DOCUMENTS: Document[] = [
     category: 'Plantillas',
     type: 'template',
     icon: 'FileText',
+    downloadUrl: `${GITHUB_RAW_BASE}/DOCUMENTO%201%20CONTRATO%20DE%20SERVICIOS%20ESPECIALIZADOS.docx`,
   },
   {
     id: 'contrato_individual',
@@ -368,6 +372,7 @@ export const DOCUMENTS: Document[] = [
     category: 'Plantillas',
     type: 'template',
     icon: 'FileText',
+    downloadUrl: `${GITHUB_RAW_BASE}/DOCUMENTO%202%20CONTRATO%20INDIVIDUAL%20DE%20TRABAJO.docx`,
   },
   {
     id: 'carta_entrega_docs',
@@ -376,6 +381,7 @@ export const DOCUMENTS: Document[] = [
     category: 'Plantillas',
     type: 'template',
     icon: 'FileText',
+    downloadUrl: `${GITHUB_RAW_BASE}/DOCUMENTO%203%20CARTA%20DE%20ENTREGA%20DE%20DOCUMENTACION.docx`,
   },
   {
     id: 'guia_repse_pasos',
@@ -384,6 +390,7 @@ export const DOCUMENTS: Document[] = [
     category: 'Guías',
     type: 'guide',
     icon: 'BookOpen',
+    downloadUrl: `${GITHUB_RAW_BASE}/Guia%201.pdf`,
   },
   {
     id: 'guia_inspeccion',
@@ -392,6 +399,7 @@ export const DOCUMENTS: Document[] = [
     category: 'Guías',
     type: 'guide',
     icon: 'BookOpen',
+    downloadUrl: `${GITHUB_RAW_BASE}/Guia%202.pdf`,
   },
   {
     id: 'guia_preparacion',
@@ -400,6 +408,7 @@ export const DOCUMENTS: Document[] = [
     category: 'Guías',
     type: 'guide',
     icon: 'Clock',
+    downloadUrl: `${GITHUB_RAW_BASE}/Guia%203.pdf`,
   },
   {
     id: 'art_15_lft',
@@ -408,6 +417,7 @@ export const DOCUMENTS: Document[] = [
     category: 'Marco Legal',
     type: 'legal',
     icon: 'Scale',
+    downloadUrl: `${GITHUB_RAW_BASE}/Marco%20legal%201.pdf`,
   },
   {
     id: 'tabla_multas',
@@ -416,5 +426,15 @@ export const DOCUMENTS: Document[] = [
     category: 'Marco Legal',
     type: 'legal',
     icon: 'AlertTriangle',
+    downloadUrl: `${GITHUB_RAW_BASE}/Marco%20legal%202.pdf`,
+  },
+  {
+    id: 'documentos_zip',
+    title: 'Todos los Documentos (ZIP)',
+    description: 'Descarga completa de plantillas, guías y marco legal',
+    category: 'Plantillas',
+    type: 'template',
+    icon: 'FileText',
+    downloadUrl: `${GITHUB_RAW_BASE}/Documentos.zip`,
   },
 ];
