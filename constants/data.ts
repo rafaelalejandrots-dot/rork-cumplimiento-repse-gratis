@@ -432,7 +432,7 @@ export const DOCUMENTS: Document[] = [
     id: 'documentos_zip',
     title: 'Todos los Documentos (ZIP)',
     description: 'Descarga completa de plantillas, guías y marco legal',
-    category: 'Plantillas',
+    category: 'Descarga Completa',
     type: 'template',
     icon: 'FileText',
     downloadUrl: `${GITHUB_RAW_BASE}/Documentos.zip`,
