@@ -330,7 +330,7 @@ export default function DiagnosticScreen() {
       <View style={styles.actionButtons}>
         <TouchableOpacity 
           style={styles.primaryButton}
-          onPress={() => router.back()}
+          onPress={() => router.replace('/')}
         >
           <Text style={styles.primaryButtonText}>Entendido</Text>
         </TouchableOpacity>
@@ -403,7 +403,7 @@ export default function DiagnosticScreen() {
       <View style={styles.actionButtons}>
         <TouchableOpacity 
           style={styles.primaryButton}
-          onPress={() => router.back()}
+          onPress={() => router.replace('/')}
         >
           <Text style={styles.primaryButtonText}>Entendido</Text>
         </TouchableOpacity>
