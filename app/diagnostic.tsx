@@ -33,7 +33,7 @@ import {
   USER_TYPES 
 } from '@/constants/data';
 
-type Step = 'user-type' | 'questions' | 'result';
+type Step = 'user-type' | 'questions' | 'result' | 'worker-info' | 'general-info';
 
 const userTypeOptions = [
   {
@@ -87,19 +87,12 @@ export default function DiagnosticScreen() {
 
   const handleUserTypeSelect = (type: UserType) => {
     setSelectedUserType(type);
-    if (type === USER_TYPES.TRABAJADOR || type === USER_TYPES.GENERAL) {
-      const diagnosticResult: DiagnosticResult = {
-        score: 0,
-        maxScore: 0,
-        criticalIssues: [],
-        warnings: [],
-        compliant: [],
-        userType: type,
-        completedAt: new Date().toISOString(),
-        answers: {},
-      };
-      saveDiagnosticResult(diagnosticResult);
-      router.back();
+    if (type === USER_TYPES.TRABAJADOR) {
+      setStep('worker-info');
+      return;
+    }
+    if (type === USER_TYPES.GENERAL) {
+      setStep('general-info');
       return;
     }
     setStep('questions');
@@ -278,6 +271,154 @@ export default function DiagnosticScreen() {
     );
   };
 
+  const renderWorkerInfo = () => (
+    <ScrollView 
+      style={styles.scrollView}
+      contentContainerStyle={styles.infoContent}
+      showsVerticalScrollIndicator={false}
+    >
+      <View style={styles.infoHeader}>
+        <View style={[styles.infoIcon, { backgroundColor: '#8B5CF6' + '20' }]}>
+          <User color="#8B5CF6" size={40} />
+        </View>
+        <Text style={styles.infoTitle}>Información para Trabajadores</Text>
+        <Text style={styles.infoSubtitle}>
+          Como trabajador, tienes derechos específicos bajo la reforma de subcontratación
+        </Text>
+      </View>
+
+      <View style={styles.infoSection}>
+        <Text style={styles.infoSectionTitle}>✅ Tus Derechos</Text>
+        <View style={styles.infoCard}>
+          <Text style={styles.infoItem}>• Debes estar contratado directamente por tu patrón real</Text>
+          <Text style={styles.infoItem}>• Acceso a seguridad social (IMSS)</Text>
+          <Text style={styles.infoItem}>• Participación en las utilidades (PTU)</Text>
+          <Text style={styles.infoItem}>• Antigüedad reconocida</Text>
+          <Text style={styles.infoItem}>• Prestaciones de ley completas</Text>
+        </View>
+      </View>
+
+      <View style={styles.infoSection}>
+        <Text style={styles.infoSectionTitle}>🔍 Cómo Verificar tu Situación</Text>
+        <View style={styles.infoCard}>
+          <Text style={styles.infoItem}>1. Revisa que tu contrato sea con la empresa donde trabajas físicamente</Text>
+          <Text style={styles.infoItem}>2. Verifica tu alta en el IMSS con tu número de seguridad social</Text>
+          <Text style={styles.infoItem}>3. Confirma que tu patrón registrado en el IMSS sea tu empleador real</Text>
+          <Text style={styles.infoItem}>4. Consulta el REPSE si trabajas para una empresa de servicios especializados</Text>
+        </View>
+      </View>
+
+      <View style={styles.infoSection}>
+        <Text style={styles.infoSectionTitle}>⚠️ Señales de Alerta</Text>
+        <View style={[styles.infoCard, { backgroundColor: Colors.warning + '10' }]}>
+          <Text style={styles.infoItem}>• Tu contrato es con una empresa diferente a donde trabajas</Text>
+          <Text style={styles.infoItem}>• Cambios frecuentes de "razón social" sin cambiar de trabajo</Text>
+          <Text style={styles.infoItem}>• No recibes recibos de nómina timbrados</Text>
+          <Text style={styles.infoItem}>• Tu salario registrado en IMSS es menor al real</Text>
+        </View>
+      </View>
+
+      <View style={styles.infoSection}>
+        <Text style={styles.infoSectionTitle}>📞 ¿Dónde Denunciar?</Text>
+        <View style={styles.infoCard}>
+          <Text style={styles.infoItem}>• PROFEDET: 800 911 7877 (gratuito)</Text>
+          <Text style={styles.infoItem}>• STPS: Inspección del Trabajo</Text>
+          <Text style={styles.infoItem}>• IMSS: Para verificar tu alta correcta</Text>
+        </View>
+      </View>
+
+      <View style={styles.actionButtons}>
+        <TouchableOpacity 
+          style={styles.primaryButton}
+          onPress={() => router.back()}
+        >
+          <Text style={styles.primaryButtonText}>Entendido</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={styles.secondaryButton}
+          onPress={handleRestart}
+        >
+          <RotateCcw color={Colors.primary} size={18} />
+          <Text style={styles.secondaryButtonText}>Cambiar Perfil</Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
+  );
+
+  const renderGeneralInfo = () => (
+    <ScrollView 
+      style={styles.scrollView}
+      contentContainerStyle={styles.infoContent}
+      showsVerticalScrollIndicator={false}
+    >
+      <View style={styles.infoHeader}>
+        <View style={[styles.infoIcon, { backgroundColor: Colors.textSecondary + '20' }]}>
+          <HelpCircle color={Colors.textSecondary} size={40} />
+        </View>
+        <Text style={styles.infoTitle}>Información General REPSE</Text>
+        <Text style={styles.infoSubtitle}>
+          Conoce los aspectos básicos de la reforma de subcontratación
+        </Text>
+      </View>
+
+      <View style={styles.infoSection}>
+        <Text style={styles.infoSectionTitle}>📋 ¿Qué es el REPSE?</Text>
+        <View style={styles.infoCard}>
+          <Text style={styles.infoText}>
+            El Registro de Prestadoras de Servicios Especializados u Obras Especializadas (REPSE) es un padrón obligatorio de la STPS donde deben registrarse las empresas que prestan servicios especializados.
+          </Text>
+        </View>
+      </View>
+
+      <View style={styles.infoSection}>
+        <Text style={styles.infoSectionTitle}>📅 Fechas Importantes</Text>
+        <View style={styles.infoCard}>
+          <Text style={styles.infoItem}>• 23 de abril 2021: Publicación de la reforma</Text>
+          <Text style={styles.infoItem}>• 24 de abril 2021: Entrada en vigor</Text>
+          <Text style={styles.infoItem}>• 1 de septiembre 2021: Inicio de operaciones del REPSE</Text>
+          <Text style={styles.infoItem}>• Renovación: Cada 3 años</Text>
+        </View>
+      </View>
+
+      <View style={styles.infoSection}>
+        <Text style={styles.infoSectionTitle}>🎯 ¿A Quién Aplica?</Text>
+        <View style={styles.infoCard}>
+          <Text style={styles.infoItem}>• Empresas que prestan servicios especializados</Text>
+          <Text style={styles.infoItem}>• Empresas que ejecutan obras especializadas</Text>
+          <Text style={styles.infoItem}>• Empresas que contratan estos servicios (beneficiarios)</Text>
+        </View>
+      </View>
+
+      <View style={styles.infoSection}>
+        <Text style={styles.infoSectionTitle}>⚖️ Sanciones por Incumplimiento</Text>
+        <View style={[styles.infoCard, { backgroundColor: Colors.error + '10' }]}>
+          <Text style={styles.infoItem}>• Multas de 2,000 a 50,000 UMA</Text>
+          <Text style={styles.infoItem}>• Responsabilidad solidaria en obligaciones laborales</Text>
+          <Text style={styles.infoItem}>• No deducibilidad fiscal de los servicios</Text>
+          <Text style={styles.infoItem}>• Posible configuración de delito de defraudación fiscal</Text>
+        </View>
+      </View>
+
+      <View style={styles.actionButtons}>
+        <TouchableOpacity 
+          style={styles.primaryButton}
+          onPress={() => router.back()}
+        >
+          <Text style={styles.primaryButtonText}>Entendido</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={styles.secondaryButton}
+          onPress={handleRestart}
+        >
+          <RotateCcw color={Colors.primary} size={18} />
+          <Text style={styles.secondaryButtonText}>Cambiar Perfil</Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
+  );
+
   const renderResult = () => {
     if (!result) return null;
 
@@ -400,6 +541,8 @@ export default function DiagnosticScreen() {
         {step === 'user-type' && renderUserTypeSelection()}
         {step === 'questions' && renderQuestion()}
         {step === 'result' && renderResult()}
+        {step === 'worker-info' && renderWorkerInfo()}
+        {step === 'general-info' && renderGeneralInfo()}
       </View>
     </View>
   );
@@ -688,5 +831,73 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500' as const,
     color: Colors.primary,
+  },
+  infoContent: {
+    padding: 20,
+    paddingBottom: 40,
+  },
+  infoHeader: {
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  infoIcon: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  infoTitle: {
+    fontSize: 22,
+    fontWeight: '700' as const,
+    color: Colors.text,
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  infoSubtitle: {
+    fontSize: 15,
+    color: Colors.textSecondary,
+    textAlign: 'center',
+    lineHeight: 22,
+  },
+  infoSection: {
+    marginBottom: 20,
+  },
+  infoSectionTitle: {
+    fontSize: 17,
+    fontWeight: '600' as const,
+    color: Colors.text,
+    marginBottom: 12,
+  },
+  infoCard: {
+    backgroundColor: Colors.surface,
+    borderRadius: 12,
+    padding: 16,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.05,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 1,
+      },
+      web: {
+        boxShadow: '0px 1px 4px rgba(0,0,0,0.05)',
+      },
+    }),
+  },
+  infoItem: {
+    fontSize: 14,
+    color: Colors.textSecondary,
+    lineHeight: 22,
+    marginBottom: 6,
+  },
+  infoText: {
+    fontSize: 14,
+    color: Colors.textSecondary,
+    lineHeight: 22,
   },
 });
