@@ -21,7 +21,7 @@ import {
   Edit3,
   X
 } from 'lucide-react-native';
-import Colors from '@/constants/colors';
+import { useColors } from '@/contexts/ThemeContext';
 import { FINES_CATALOG, UMA_VALUE, FineItem } from '@/constants/data';
 
 const formatCurrency = (amount: number): string => {
@@ -34,6 +34,7 @@ const formatCurrency = (amount: number): string => {
 };
 
 export default function CalculatorScreen() {
+  const colors = useColors();
   const [selectedFines, setSelectedFines] = useState<Record<string, boolean>>({});
   const [workerCount, setWorkerCount] = useState(1);
   const [customUMA, setCustomUMA] = useState(UMA_VALUE);
@@ -95,35 +96,35 @@ export default function CalculatorScreen() {
   const hasPerWorkerFine = FINES_CATALOG.some(f => selectedFines[f.id] && f.perWorker);
 
   return (
-    <View style={styles.container}>
-      <SafeAreaView edges={['top']} style={styles.safeArea}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <SafeAreaView edges={['top']} style={[styles.safeArea, { backgroundColor: colors.surface, borderBottomColor: colors.border }]}>
         <View style={styles.header}>
           <View style={styles.headerRow}>
             <Image
               source={{ uri: 'https://pub-e001eb4506b145aa938b5d3badbff6a5.r2.dev/attachments/kh81cpscyz517q0o05up7' }}
-              style={styles.logo}
+              style={[styles.logo, { backgroundColor: colors.surfaceSecondary }]}
               resizeMode="contain"
             />
             <View style={styles.headerTextContainer}>
-              <Text style={styles.headerTitle}>Calculadora de Multas</Text>
-              <Text style={styles.headerSubtitle}>Estima el riesgo económico</Text>
+              <Text style={[styles.headerTitle, { color: colors.text }]}>Calculadora de Multas</Text>
+              <Text style={[styles.headerSubtitle, { color: colors.textSecondary }]}>Estima el riesgo económico</Text>
             </View>
           </View>
         </View>
 
         <TouchableOpacity 
-          style={styles.umaInfo}
+          style={[styles.umaInfo, { backgroundColor: colors.primary + '20' }]}
           onPress={() => {
             setTempUMA(customUMA.toString());
             setShowUMAModal(true);
           }}
           activeOpacity={0.7}
         >
-          <Info color={Colors.primary} size={14} />
-          <Text style={styles.umaText}>
+          <Info color={colors.primary} size={14} />
+          <Text style={[styles.umaText, { color: colors.primary }]}>
             UMA Diario: {formatCurrency(customUMA)}
           </Text>
-          <Edit3 color={Colors.primary} size={14} />
+          <Edit3 color={colors.primary} size={14} />
         </TouchableOpacity>
       </SafeAreaView>
 
@@ -132,7 +133,7 @@ export default function CalculatorScreen() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.sectionTitle}>Selecciona las infracciones</Text>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>Selecciona las infracciones</Text>
         
         {FINES_CATALOG.map((fine) => {
           const isSelected = selectedFines[fine.id];
@@ -140,27 +141,31 @@ export default function CalculatorScreen() {
           return (
             <TouchableOpacity
               key={fine.id}
-              style={[styles.fineCard, isSelected && styles.fineCardSelected]}
+              style={[
+                styles.fineCard, 
+                { backgroundColor: colors.surface },
+                isSelected && { borderColor: colors.error + '40', backgroundColor: colors.errorLight }
+              ]}
               onPress={() => toggleFine(fine.id)}
               activeOpacity={0.7}
             >
               <View style={styles.fineCheckbox}>
                 {isSelected ? (
-                  <CheckSquare color={Colors.error} size={22} />
+                  <CheckSquare color={colors.error} size={22} />
                 ) : (
-                  <Square color={Colors.textLight} size={22} />
+                  <Square color={colors.textLight} size={22} />
                 )}
               </View>
               <View style={styles.fineContent}>
-                <Text style={styles.fineName}>{fine.name}</Text>
-                <Text style={styles.fineDescription}>{fine.description}</Text>
+                <Text style={[styles.fineName, { color: colors.text }]}>{fine.name}</Text>
+                <Text style={[styles.fineDescription, { color: colors.textSecondary }]}>{fine.description}</Text>
                 <View style={styles.fineRange}>
-                  <Text style={styles.fineRangeText}>
+                  <Text style={[styles.fineRangeText, { color: colors.error }]}>
                     {fine.minUMA.toLocaleString()} - {fine.maxUMA.toLocaleString()} UMAs
                   </Text>
                   {fine.perWorker && (
-                    <View style={styles.perWorkerBadge}>
-                      <Text style={styles.perWorkerText}>Por trabajador</Text>
+                    <View style={[styles.perWorkerBadge, { backgroundColor: colors.warningLight }]}>
+                      <Text style={[styles.perWorkerText, { color: colors.warningDark }]}>Por trabajador</Text>
                     </View>
                   )}
                 </View>
@@ -170,61 +175,61 @@ export default function CalculatorScreen() {
         })}
 
         {hasPerWorkerFine && (
-          <View style={styles.workerCountCard}>
-            <Text style={styles.workerCountLabel}>Número de trabajadores afectados:</Text>
+          <View style={[styles.workerCountCard, { backgroundColor: colors.surface }]}>
+            <Text style={[styles.workerCountLabel, { color: colors.text }]}>Número de trabajadores afectados:</Text>
             <View style={styles.workerCountControls}>
               <TouchableOpacity 
-                style={styles.countButton} 
+                style={[styles.countButton, { backgroundColor: colors.primary }]} 
                 onPress={decreaseWorkers}
               >
-                <Text style={styles.countButtonText}>-</Text>
+                <Text style={[styles.countButtonText, { color: colors.textOnPrimary }]}>-</Text>
               </TouchableOpacity>
-              <Text style={styles.workerCountValue}>{workerCount}</Text>
+              <Text style={[styles.workerCountValue, { color: colors.text }]}>{workerCount}</Text>
               <TouchableOpacity 
-                style={styles.countButton} 
+                style={[styles.countButton, { backgroundColor: colors.primary }]} 
                 onPress={increaseWorkers}
               >
-                <Text style={styles.countButtonText}>+</Text>
+                <Text style={[styles.countButtonText, { color: colors.textOnPrimary }]}>+</Text>
               </TouchableOpacity>
             </View>
           </View>
         )}
 
         {calculation.selectedItems.length > 0 && (
-          <View style={styles.resultCard}>
+          <View style={[styles.resultCard, { backgroundColor: colors.surface, borderColor: colors.error + '30' }]}>
             <View style={styles.resultHeader}>
-              <Calculator color={Colors.error} size={24} />
-              <Text style={styles.resultTitle}>Multa Estimada</Text>
+              <Calculator color={colors.error} size={24} />
+              <Text style={[styles.resultTitle, { color: colors.text }]}>Multa Estimada</Text>
             </View>
 
-            <View style={styles.resultAmounts}>
+            <View style={[styles.resultAmounts, { backgroundColor: colors.surfaceSecondary }]}>
               <View style={styles.resultRow}>
-                <Text style={styles.resultLabel}>En UMAs:</Text>
-                <Text style={styles.resultUMA}>
+                <Text style={[styles.resultLabel, { color: colors.textSecondary }]}>En UMAs:</Text>
+                <Text style={[styles.resultUMA, { color: colors.text }]}>
                   {calculation.minUMA.toLocaleString()} - {calculation.maxUMA.toLocaleString()}
                 </Text>
               </View>
-              <View style={styles.resultDivider} />
+              <View style={[styles.resultDivider, { backgroundColor: colors.border }]} />
               <View style={styles.resultRow}>
-                <Text style={styles.resultLabel}>Mínimo:</Text>
-                <Text style={styles.resultMXN}>{formatCurrency(calculation.minMXN)}</Text>
+                <Text style={[styles.resultLabel, { color: colors.textSecondary }]}>Mínimo:</Text>
+                <Text style={[styles.resultMXN, { color: colors.error }]}>{formatCurrency(calculation.minMXN)}</Text>
               </View>
               <View style={styles.resultRow}>
-                <Text style={styles.resultLabel}>Máximo:</Text>
-                <Text style={[styles.resultMXN, styles.resultMax]}>
+                <Text style={[styles.resultLabel, { color: colors.textSecondary }]}>Máximo:</Text>
+                <Text style={[styles.resultMXN, styles.resultMax, { color: colors.error }]}>
                   {formatCurrency(calculation.maxMXN)}
                 </Text>
               </View>
             </View>
 
             {calculation.additionalConsequences.length > 0 && (
-              <View style={styles.consequencesSection}>
+              <View style={[styles.consequencesSection, { borderTopColor: colors.border }]}>
                 <View style={styles.consequencesHeader}>
-                  <AlertTriangle color={Colors.warning} size={16} />
-                  <Text style={styles.consequencesTitle}>Consecuencias adicionales:</Text>
+                  <AlertTriangle color={colors.warning} size={16} />
+                  <Text style={[styles.consequencesTitle, { color: colors.warningDark }]}>Consecuencias adicionales:</Text>
                 </View>
                 {calculation.additionalConsequences.map((consequence, index) => (
-                  <Text key={index} style={styles.consequenceItem}>
+                  <Text key={index} style={[styles.consequenceItem, { color: colors.textSecondary }]}>
                     • {consequence}
                   </Text>
                 ))}
@@ -235,17 +240,17 @@ export default function CalculatorScreen() {
 
         {calculation.selectedItems.length === 0 && (
           <View style={styles.emptyResult}>
-            <TrendingDown color={Colors.textLight} size={48} />
-            <Text style={styles.emptyTitle}>Sin infracciones seleccionadas</Text>
-            <Text style={styles.emptyText}>
+            <TrendingDown color={colors.textLight} size={48} />
+            <Text style={[styles.emptyTitle, { color: colors.text }]}>Sin infracciones seleccionadas</Text>
+            <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
               Selecciona las infracciones para calcular el riesgo de multa.
             </Text>
           </View>
         )}
 
-        <View style={styles.disclaimerCard}>
-          <AlertTriangle color={Colors.warningDark} size={16} />
-          <Text style={styles.disclaimerText}>
+        <View style={[styles.disclaimerCard, { backgroundColor: colors.warningLight }]}>
+          <AlertTriangle color={colors.warningDark} size={16} />
+          <Text style={[styles.disclaimerText, { color: colors.warningDark }]}>
             Este cálculo es estimado. El monto real depende de diversos factores como 
             reincidencia, tamaño de la empresa y criterio de la autoridad.
           </Text>
@@ -259,51 +264,51 @@ export default function CalculatorScreen() {
         onRequestClose={() => setShowUMAModal(false)}
       >
         <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
+          <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Valor del UMA Diario</Text>
+              <Text style={[styles.modalTitle, { color: colors.text }]}>Valor del UMA Diario</Text>
               <TouchableOpacity
                 onPress={() => setShowUMAModal(false)}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               >
-                <X color={Colors.textSecondary} size={24} />
+                <X color={colors.textSecondary} size={24} />
               </TouchableOpacity>
             </View>
 
-            <Text style={styles.modalDescription}>
+            <Text style={[styles.modalDescription, { color: colors.textSecondary }]}>
               Modifica el valor del UMA para calcular multas con valores actualizados.
             </Text>
 
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputPrefix}>$</Text>
+            <View style={[styles.inputContainer, { backgroundColor: colors.surfaceSecondary, borderColor: colors.primary }]}>
+              <Text style={[styles.inputPrefix, { color: colors.textSecondary }]}>$</Text>
               <TextInput
-                style={styles.umaInput}
+                style={[styles.umaInput, { color: colors.text }]}
                 value={tempUMA}
                 onChangeText={setTempUMA}
                 keyboardType="decimal-pad"
                 placeholder="113.14"
-                placeholderTextColor={Colors.textLight}
+                placeholderTextColor={colors.textLight}
                 selectTextOnFocus
               />
-              <Text style={styles.inputSuffix}>MXN</Text>
+              <Text style={[styles.inputSuffix, { color: colors.textSecondary }]}>MXN</Text>
             </View>
 
-            <Text style={styles.umaHint}>
+            <Text style={[styles.umaHint, { color: colors.textLight }]}>
               Valor oficial 2025: ${UMA_VALUE.toFixed(2)} MXN
             </Text>
 
             <View style={styles.modalButtons}>
               <TouchableOpacity
-                style={styles.resetButton}
+                style={[styles.resetButton, { backgroundColor: colors.surfaceSecondary }]}
                 onPress={handleResetUMA}
               >
-                <Text style={styles.resetButtonText}>Restaurar</Text>
+                <Text style={[styles.resetButtonText, { color: colors.textSecondary }]}>Restaurar</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={styles.saveButton}
+                style={[styles.saveButton, { backgroundColor: colors.primary }]}
                 onPress={handleSaveUMA}
               >
-                <Text style={styles.saveButtonText}>Guardar</Text>
+                <Text style={[styles.saveButtonText, { color: colors.textOnPrimary }]}>Guardar</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -316,12 +321,9 @@ export default function CalculatorScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
   },
   safeArea: {
-    backgroundColor: Colors.surface,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.border,
   },
   header: {
     paddingHorizontal: 20,
@@ -336,7 +338,6 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 8,
-    backgroundColor: Colors.surfaceSecondary,
   },
   headerTextContainer: {
     marginLeft: 12,
@@ -345,11 +346,9 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 24,
     fontWeight: '700' as const,
-    color: Colors.text,
   },
   headerSubtitle: {
     fontSize: 14,
-    color: Colors.textSecondary,
     marginTop: 4,
   },
   umaInfo: {
@@ -358,7 +357,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingBottom: 12,
     gap: 6,
-    backgroundColor: Colors.primaryLight,
     marginHorizontal: 16,
     marginBottom: 8,
     borderRadius: 8,
@@ -366,7 +364,6 @@ const styles = StyleSheet.create({
   },
   umaText: {
     fontSize: 13,
-    color: Colors.primary,
     fontWeight: '600' as const,
     flex: 1,
   },
@@ -378,7 +375,6 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   modalContent: {
-    backgroundColor: Colors.surface,
     borderRadius: 16,
     padding: 24,
     width: '100%',
@@ -393,34 +389,28 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 18,
     fontWeight: '700' as const,
-    color: Colors.text,
   },
   modalDescription: {
     fontSize: 14,
-    color: Colors.textSecondary,
     lineHeight: 20,
     marginBottom: 20,
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.surfaceSecondary,
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: Colors.primary,
     paddingHorizontal: 16,
     marginBottom: 8,
   },
   inputPrefix: {
     fontSize: 18,
     fontWeight: '600' as const,
-    color: Colors.textSecondary,
   },
   umaInput: {
     flex: 1,
     fontSize: 24,
     fontWeight: '700' as const,
-    color: Colors.text,
     paddingVertical: 14,
     paddingHorizontal: 8,
     textAlign: 'center',
@@ -428,11 +418,9 @@ const styles = StyleSheet.create({
   inputSuffix: {
     fontSize: 14,
     fontWeight: '500' as const,
-    color: Colors.textSecondary,
   },
   umaHint: {
     fontSize: 12,
-    color: Colors.textLight,
     textAlign: 'center',
     marginBottom: 20,
   },
@@ -444,25 +432,21 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 14,
     borderRadius: 10,
-    backgroundColor: Colors.surfaceSecondary,
     alignItems: 'center',
   },
   resetButtonText: {
     fontSize: 15,
     fontWeight: '600' as const,
-    color: Colors.textSecondary,
   },
   saveButton: {
     flex: 1,
     paddingVertical: 14,
     borderRadius: 10,
-    backgroundColor: Colors.primary,
     alignItems: 'center',
   },
   saveButtonText: {
     fontSize: 15,
     fontWeight: '600' as const,
-    color: Colors.textOnPrimary,
   },
   scrollView: {
     flex: 1,
@@ -474,14 +458,12 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600' as const,
-    color: Colors.text,
     paddingHorizontal: 16,
     marginBottom: 12,
   },
   fineCard: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    backgroundColor: Colors.surface,
     marginHorizontal: 16,
     borderRadius: 12,
     padding: 14,
@@ -503,10 +485,6 @@ const styles = StyleSheet.create({
       },
     }),
   },
-  fineCardSelected: {
-    borderColor: Colors.error + '40',
-    backgroundColor: Colors.errorLight,
-  },
   fineCheckbox: {
     marginRight: 12,
     marginTop: 2,
@@ -517,12 +495,10 @@ const styles = StyleSheet.create({
   fineName: {
     fontSize: 15,
     fontWeight: '600' as const,
-    color: Colors.text,
     marginBottom: 4,
   },
   fineDescription: {
     fontSize: 13,
-    color: Colors.textSecondary,
     lineHeight: 18,
     marginBottom: 8,
   },
@@ -535,10 +511,8 @@ const styles = StyleSheet.create({
   fineRangeText: {
     fontSize: 12,
     fontWeight: '600' as const,
-    color: Colors.error,
   },
   perWorkerBadge: {
-    backgroundColor: Colors.warningLight,
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 4,
@@ -546,10 +520,8 @@ const styles = StyleSheet.create({
   perWorkerText: {
     fontSize: 10,
     fontWeight: '600' as const,
-    color: Colors.warningDark,
   },
   workerCountCard: {
-    backgroundColor: Colors.surface,
     marginHorizontal: 16,
     borderRadius: 12,
     padding: 16,
@@ -572,7 +544,6 @@ const styles = StyleSheet.create({
   workerCountLabel: {
     fontSize: 14,
     fontWeight: '500' as const,
-    color: Colors.text,
     marginBottom: 12,
   },
   workerCountControls: {
@@ -585,33 +556,28 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: Colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
   },
   countButtonText: {
     fontSize: 24,
     fontWeight: '600' as const,
-    color: Colors.textOnPrimary,
   },
   workerCountValue: {
     fontSize: 32,
     fontWeight: '700' as const,
-    color: Colors.text,
     minWidth: 60,
     textAlign: 'center',
   },
   resultCard: {
-    backgroundColor: Colors.surface,
     marginHorizontal: 16,
     borderRadius: 16,
     padding: 20,
     marginBottom: 16,
     borderWidth: 2,
-    borderColor: Colors.error + '30',
     ...Platform.select({
       ios: {
-        shadowColor: Colors.error,
+        shadowColor: '#EF4444',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.15,
         shadowRadius: 12,
@@ -633,10 +599,8 @@ const styles = StyleSheet.create({
   resultTitle: {
     fontSize: 18,
     fontWeight: '700' as const,
-    color: Colors.text,
   },
   resultAmounts: {
-    backgroundColor: Colors.surfaceSecondary,
     borderRadius: 12,
     padding: 16,
   },
@@ -648,22 +612,18 @@ const styles = StyleSheet.create({
   },
   resultLabel: {
     fontSize: 14,
-    color: Colors.textSecondary,
   },
   resultUMA: {
     fontSize: 14,
     fontWeight: '600' as const,
-    color: Colors.text,
   },
   resultDivider: {
     height: 1,
-    backgroundColor: Colors.border,
     marginVertical: 8,
   },
   resultMXN: {
     fontSize: 18,
     fontWeight: '700' as const,
-    color: Colors.error,
   },
   resultMax: {
     fontSize: 22,
@@ -672,7 +632,6 @@ const styles = StyleSheet.create({
     marginTop: 16,
     paddingTop: 16,
     borderTopWidth: 1,
-    borderTopColor: Colors.border,
   },
   consequencesHeader: {
     flexDirection: 'row',
@@ -683,11 +642,9 @@ const styles = StyleSheet.create({
   consequencesTitle: {
     fontSize: 14,
     fontWeight: '600' as const,
-    color: Colors.warningDark,
   },
   consequenceItem: {
     fontSize: 13,
-    color: Colors.textSecondary,
     lineHeight: 20,
     paddingLeft: 8,
   },
@@ -700,13 +657,11 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 16,
     fontWeight: '600' as const,
-    color: Colors.text,
     marginTop: 16,
     textAlign: 'center',
   },
   emptyText: {
     fontSize: 14,
-    color: Colors.textSecondary,
     textAlign: 'center',
     marginTop: 8,
     lineHeight: 20,
@@ -715,7 +670,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     marginHorizontal: 16,
-    backgroundColor: Colors.warningLight,
     borderRadius: 12,
     padding: 14,
     gap: 10,
@@ -723,7 +677,6 @@ const styles = StyleSheet.create({
   disclaimerText: {
     flex: 1,
     fontSize: 12,
-    color: Colors.warningDark,
     lineHeight: 18,
   },
 });

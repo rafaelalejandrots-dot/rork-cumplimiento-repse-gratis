@@ -1,4 +1,4 @@
-export default {
+export const lightTheme = {
   primary: '#1E3A5F',
   primaryLight: '#2C5282',
   primaryDark: '#0F2942',
@@ -29,11 +29,45 @@ export default {
   border: '#E2E8F0',
   borderLight: '#F1F5F9',
   
-  light: {
-    text: '#1E293B',
-    background: '#F8FAFC',
-    tint: '#1E3A5F',
-    tabIconDefault: '#94A3B8',
-    tabIconSelected: '#1E3A5F',
-  },
+  tabIconDefault: '#94A3B8',
+  tabIconSelected: '#1E3A5F',
 };
+
+export const darkTheme = {
+  primary: '#63B3ED',
+  primaryLight: '#3182CE',
+  primaryDark: '#90CDF4',
+  secondary: '#63B3ED',
+  accent: '#90CDF4',
+  
+  success: '#34D399',
+  successLight: '#064E3B',
+  successDark: '#6EE7B7',
+  
+  warning: '#FBBF24',
+  warningLight: '#78350F',
+  warningDark: '#FCD34D',
+  
+  error: '#F87171',
+  errorLight: '#7F1D1D',
+  errorDark: '#FCA5A5',
+  
+  background: '#0F172A',
+  surface: '#1E293B',
+  surfaceSecondary: '#334155',
+  
+  text: '#F1F5F9',
+  textSecondary: '#94A3B8',
+  textLight: '#64748B',
+  textOnPrimary: '#0F172A',
+  
+  border: '#334155',
+  borderLight: '#1E293B',
+  
+  tabIconDefault: '#64748B',
+  tabIconSelected: '#63B3ED',
+};
+
+export type ThemeColors = typeof lightTheme;
+
+export default lightTheme;

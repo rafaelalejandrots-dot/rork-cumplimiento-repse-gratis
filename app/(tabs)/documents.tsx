@@ -22,7 +22,7 @@ import {
   Download,
   ExternalLink
 } from 'lucide-react-native';
-import Colors from '@/constants/colors';
+import { useColors } from '@/contexts/ThemeContext';
 import { DOCUMENTS, Document } from '@/constants/data';
 
 const getIconComponent = (iconName: string) => {
@@ -36,15 +36,6 @@ const getIconComponent = (iconName: string) => {
   }
 };
 
-const getTypeColor = (type: string) => {
-  switch (type) {
-    case 'template': return Colors.primary;
-    case 'guide': return '#8B5CF6';
-    case 'legal': return Colors.warning;
-    default: return Colors.textSecondary;
-  }
-};
-
 const getTypeLabel = (type: string) => {
   switch (type) {
     case 'template': return 'Plantilla';
@@ -55,8 +46,18 @@ const getTypeLabel = (type: string) => {
 };
 
 export default function DocumentsScreen() {
+  const colors = useColors();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  const getTypeColor = (type: string) => {
+    switch (type) {
+      case 'template': return colors.primary;
+      case 'guide': return '#8B5CF6';
+      case 'legal': return colors.warning;
+      default: return colors.textSecondary;
+    }
+  };
 
   const categories = [...new Set(DOCUMENTS.map(doc => doc.category))];
 
@@ -97,28 +98,28 @@ export default function DocumentsScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <SafeAreaView edges={['top']} style={styles.safeArea}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <SafeAreaView edges={['top']} style={[styles.safeArea, { backgroundColor: colors.surface, borderBottomColor: colors.border }]}>
         <View style={styles.header}>
           <View style={styles.headerRow}>
             <Image
               source={{ uri: 'https://pub-e001eb4506b145aa938b5d3badbff6a5.r2.dev/attachments/kh81cpscyz517q0o05up7' }}
-              style={styles.logo}
+              style={[styles.logo, { backgroundColor: colors.surfaceSecondary }]}
               resizeMode="contain"
             />
             <View style={styles.headerTextContainer}>
-              <Text style={styles.headerTitle}>Biblioteca de Documentos</Text>
-              <Text style={styles.headerSubtitle}>Plantillas, guías y marco legal</Text>
+              <Text style={[styles.headerTitle, { color: colors.text }]}>Biblioteca de Documentos</Text>
+              <Text style={[styles.headerSubtitle, { color: colors.textSecondary }]}>Plantillas, guías y marco legal</Text>
             </View>
           </View>
         </View>
 
-        <View style={styles.searchContainer}>
-          <Search color={Colors.textLight} size={18} />
+        <View style={[styles.searchContainer, { backgroundColor: colors.surfaceSecondary }]}>
+          <Search color={colors.textLight} size={18} />
           <TextInput
-            style={styles.searchInput}
+            style={[styles.searchInput, { color: colors.text }]}
             placeholder="Buscar documentos..."
-            placeholderTextColor={Colors.textLight}
+            placeholderTextColor={colors.textLight}
             value={searchQuery}
             onChangeText={setSearchQuery}
           />
@@ -133,13 +134,15 @@ export default function DocumentsScreen() {
           <TouchableOpacity
             style={[
               styles.categoryChip,
-              !selectedCategory && styles.categoryChipActive
+              { backgroundColor: colors.surfaceSecondary },
+              !selectedCategory && { backgroundColor: colors.primary }
             ]}
             onPress={() => setSelectedCategory(null)}
           >
             <Text style={[
               styles.categoryChipText,
-              !selectedCategory && styles.categoryChipTextActive
+              { color: colors.textSecondary },
+              !selectedCategory && { color: colors.textOnPrimary }
             ]}>
               Todos
             </Text>
@@ -149,13 +152,15 @@ export default function DocumentsScreen() {
               key={category}
               style={[
                 styles.categoryChip,
-                selectedCategory === category && styles.categoryChipActive
+                { backgroundColor: colors.surfaceSecondary },
+                selectedCategory === category && { backgroundColor: colors.primary }
               ]}
               onPress={() => setSelectedCategory(category)}
             >
               <Text style={[
                 styles.categoryChipText,
-                selectedCategory === category && styles.categoryChipTextActive
+                { color: colors.textSecondary },
+                selectedCategory === category && { color: colors.textOnPrimary }
               ]}>
                 {category}
               </Text>
@@ -171,7 +176,7 @@ export default function DocumentsScreen() {
       >
         {Object.entries(groupedDocuments).map(([category, docs]) => (
           <View key={category} style={styles.categorySection}>
-            <Text style={styles.categoryTitle}>{category}</Text>
+            <Text style={[styles.categoryTitle, { color: colors.primary }]}>{category}</Text>
             {docs.map((doc) => {
               const IconComponent = getIconComponent(doc.icon);
               const typeColor = getTypeColor(doc.type);
@@ -179,7 +184,7 @@ export default function DocumentsScreen() {
               return (
                 <TouchableOpacity
                   key={doc.id}
-                  style={styles.documentCard}
+                  style={[styles.documentCard, { backgroundColor: colors.surface }]}
                   onPress={() => handleDocumentPress(doc)}
                   activeOpacity={0.7}
                 >
@@ -188,20 +193,20 @@ export default function DocumentsScreen() {
                   </View>
                   <View style={styles.documentContent}>
                     <View style={styles.documentHeader}>
-                      <Text style={styles.documentTitle}>{doc.title}</Text>
+                      <Text style={[styles.documentTitle, { color: colors.text }]}>{doc.title}</Text>
                       <View style={[styles.typeBadge, { backgroundColor: typeColor + '20' }]}>
                         <Text style={[styles.typeBadgeText, { color: typeColor }]}>
                           {getTypeLabel(doc.type)}
                         </Text>
                       </View>
                     </View>
-                    <Text style={styles.documentDescription}>{doc.description}</Text>
+                    <Text style={[styles.documentDescription, { color: colors.textSecondary }]}>{doc.description}</Text>
                   </View>
                   <View style={styles.documentAction}>
                     {doc.type === 'template' ? (
-                      <Download color={Colors.primary} size={18} />
+                      <Download color={colors.primary} size={18} />
                     ) : (
-                      <ExternalLink color={Colors.textSecondary} size={18} />
+                      <ExternalLink color={colors.textSecondary} size={18} />
                     )}
                   </View>
                 </TouchableOpacity>
@@ -212,9 +217,9 @@ export default function DocumentsScreen() {
 
         {Object.keys(groupedDocuments).length === 0 && (
           <View style={styles.emptyState}>
-            <FileText color={Colors.textLight} size={48} />
-            <Text style={styles.emptyTitle}>Sin resultados</Text>
-            <Text style={styles.emptyText}>
+            <FileText color={colors.textLight} size={48} />
+            <Text style={[styles.emptyTitle, { color: colors.text }]}>Sin resultados</Text>
+            <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
               No se encontraron documentos que coincidan con tu búsqueda.
             </Text>
           </View>
@@ -227,12 +232,9 @@ export default function DocumentsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
   },
   safeArea: {
-    backgroundColor: Colors.surface,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.border,
   },
   header: {
     paddingHorizontal: 20,
@@ -247,7 +249,6 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 8,
-    backgroundColor: Colors.surfaceSecondary,
   },
   headerTextContainer: {
     marginLeft: 12,
@@ -256,11 +257,9 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 24,
     fontWeight: '700' as const,
-    color: Colors.text,
   },
   headerSubtitle: {
     fontSize: 14,
-    color: Colors.textSecondary,
     marginTop: 4,
   },
   searchContainer: {
@@ -268,7 +267,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginHorizontal: 16,
     marginBottom: 12,
-    backgroundColor: Colors.surfaceSecondary,
     borderRadius: 10,
     paddingHorizontal: 12,
     paddingVertical: 10,
@@ -277,7 +275,6 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 10,
     fontSize: 15,
-    color: Colors.text,
   },
   categoriesContainer: {
     maxHeight: 44,
@@ -291,19 +288,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 6,
     borderRadius: 16,
-    backgroundColor: Colors.surfaceSecondary,
     marginRight: 8,
-  },
-  categoryChipActive: {
-    backgroundColor: Colors.primary,
   },
   categoryChipText: {
     fontSize: 13,
     fontWeight: '500' as const,
-    color: Colors.textSecondary,
-  },
-  categoryChipTextActive: {
-    color: Colors.textOnPrimary,
   },
   scrollView: {
     flex: 1,
@@ -319,13 +308,11 @@ const styles = StyleSheet.create({
   categoryTitle: {
     fontSize: 16,
     fontWeight: '600' as const,
-    color: Colors.primary,
     marginBottom: 12,
   },
   documentCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.surface,
     borderRadius: 12,
     padding: 14,
     marginBottom: 10,
@@ -365,7 +352,6 @@ const styles = StyleSheet.create({
   documentTitle: {
     fontSize: 15,
     fontWeight: '600' as const,
-    color: Colors.text,
     flex: 1,
   },
   typeBadge: {
@@ -379,7 +365,6 @@ const styles = StyleSheet.create({
   },
   documentDescription: {
     fontSize: 13,
-    color: Colors.textSecondary,
     lineHeight: 18,
   },
   documentAction: {
@@ -395,16 +380,13 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 18,
     fontWeight: '600' as const,
-    color: Colors.text,
     marginTop: 16,
     textAlign: 'center',
   },
   emptyText: {
     fontSize: 14,
-    color: Colors.textSecondary,
     textAlign: 'center',
     marginTop: 8,
     lineHeight: 20,
   },
-
 });

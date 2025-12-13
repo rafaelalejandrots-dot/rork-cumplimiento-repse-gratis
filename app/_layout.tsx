@@ -5,6 +5,7 @@ import React, { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
 import { AppProvider, useApp } from "@/contexts/AppContext";
+import { ThemeProvider, useTheme } from "@/contexts/ThemeContext";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -12,6 +13,7 @@ const queryClient = new QueryClient();
 
 function RootLayoutNav() {
   const { data, isLoading } = useApp();
+  const { isDark, colors } = useTheme();
   const router = useRouter();
   const segments = useSegments();
 
@@ -26,30 +28,40 @@ function RootLayoutNav() {
   }, [data.hasSeenIntro, isLoading, segments]);
 
   return (
-    <Stack screenOptions={{ headerBackTitle: "Atrás" }}>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen 
-        name="onboarding" 
-        options={{ 
-          headerShown: false,
-          animation: 'fade',
-        }} 
-      />
-      <Stack.Screen 
-        name="diagnostic" 
-        options={{ 
-          headerShown: false,
-          presentation: 'modal',
-        }} 
-      />
-      <Stack.Screen 
-        name="simulator" 
-        options={{ 
-          headerShown: false,
-          presentation: 'modal',
-        }} 
-      />
-    </Stack>
+    <>
+      <StatusBar style={isDark ? "light" : "dark"} />
+      <Stack 
+        screenOptions={{ 
+          headerBackTitle: "Atrás",
+          headerStyle: { backgroundColor: colors.surface },
+          headerTintColor: colors.text,
+          contentStyle: { backgroundColor: colors.background },
+        }}
+      >
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen 
+          name="onboarding" 
+          options={{ 
+            headerShown: false,
+            animation: 'fade',
+          }} 
+        />
+        <Stack.Screen 
+          name="diagnostic" 
+          options={{ 
+            headerShown: false,
+            presentation: 'modal',
+          }} 
+        />
+        <Stack.Screen 
+          name="simulator" 
+          options={{ 
+            headerShown: false,
+            presentation: 'modal',
+          }} 
+        />
+      </Stack>
+    </>
   );
 }
 
@@ -63,10 +75,11 @@ export default function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <AppProvider>
-          <StatusBar style="dark" />
-          <RootLayoutNav />
-        </AppProvider>
+        <ThemeProvider>
+          <AppProvider>
+            <RootLayoutNav />
+          </AppProvider>
+        </ThemeProvider>
       </GestureHandlerRootView>
     </QueryClientProvider>
   );

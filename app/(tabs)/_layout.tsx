@@ -1,18 +1,20 @@
 import { Tabs } from "expo-router";
 import { Home, CheckSquare, FileText, Calculator, BookOpen } from "lucide-react-native";
 import React from "react";
-import Colors from "@/constants/colors";
+import { useColors } from "@/contexts/ThemeContext";
 
 export default function TabLayout() {
+  const colors = useColors();
+  
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors.primary,
-        tabBarInactiveTintColor: Colors.textLight,
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.textLight,
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: Colors.surface,
-          borderTopColor: Colors.border,
+          backgroundColor: colors.surface,
+          borderTopColor: colors.border,
           paddingTop: 4,
           height: 60,
         },
